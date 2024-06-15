@@ -1,8 +1,14 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(
+  cors({
+    origin: '*',
+  }),
+);
 
 // In-memory array to store stock items
 let stock = [{ id: 1, item: 'Milho', quantity: 100 }];
@@ -36,11 +42,10 @@ app.put('/stock/:id', (req, res) => {
   const stockItem = stock.find((s) => s.id === parseInt(req.params.id));
   if (!stockItem) return res.status(404).send('Item not found');
 
-  const { item, quantity } = req.body;
+  const { quantity } = req.body;
 
   const updatedStockItem = {
-    id: stockItem.id,
-    item,
+    ...stockItem,
     quantity,
   };
 
